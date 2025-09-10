@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Coffella — Меню</title>
 
-<!-- Шрифты, похожие на макет -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
@@ -18,7 +17,6 @@
     <img src="coffella/img/Logo_coffella.svg" alt="Coffella logo" class="logo">
   </div>
 </header>
-
 
 
 <!-- Навбар -->
@@ -265,21 +263,48 @@
 </main>
 
 <script>
-/* Подсветка активного пункта навбара по текущей секции */
-const navLinks = document.querySelectorAll('.nav a[href^="#"]');
-const targets = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+(function(){
+  const links = {
+    top:  document.querySelector('.nav a[href="#top"]'),
+    food: document.querySelector('.nav a[href="#food"]')
+  };
+  const topEl  = document.getElementById('top');   // обычно <main id="top">
+  const foodEl = document.getElementById('food');  // <section id="food">
+  const navEl  = document.querySelector('.nav');
 
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    const link = document.querySelector('.nav a[href="#'+e.target.id+'"]');
-    if(!link) return;
-    if(e.isIntersecting){
-      navLinks.forEach(a=>a.classList.remove('active'));
-      link.classList.add('active');
-    }
+  function setActive(id){
+    if (!links.top || !links.food) return;
+    links.top.classList.toggle('active',  id === 'top');
+    links.food.classList.toggle('active', id === 'food');
+  }
+
+  function updateActive(){
+    const navH = navEl ? navEl.offsetHeight : 0;
+    const y = window.scrollY + navH + 1;                 // верх видимой области ниже навбара
+    const foodTop = foodEl ? foodEl.offsetTop : Infinity;
+    setActive(y >= foodTop ? 'food' : 'top');
+  }
+
+  // плавный скролл и мгновенная подсветка по клику
+  document.querySelectorAll('.nav a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      const navH = navEl ? navEl.offsetHeight : 0;
+      const targetY = el.getBoundingClientRect().top + window.scrollY - navH;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+      setActive(id);
+    });
   });
-},{rootMargin:"-50% 0px -45% 0px", threshold:0.01});
-targets.forEach(t=>io.observe(t));
+
+  // обновляем при скролле/ресайзе и на старте
+  window.addEventListener('scroll', updateActive, { passive: true });
+  window.addEventListener('resize', updateActive);
+  document.addEventListener('DOMContentLoaded', updateActive);
+  updateActive();
+})();
 </script>
 </body>
 </html>

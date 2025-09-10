@@ -125,7 +125,10 @@ body{
   font-size:32px;
   letter-spacing:.02em;
 }
-.section-title.food{ text-transform:none; }
+.section-title.food{
+    text-transform:none;
+    margin: 0 0 20px; 
+     }
 
 /* Карточка списка */
 .card{
@@ -149,7 +152,6 @@ body{
 .row:last-child{
   border-bottom:0
 }
-
 
 
 /* единый стиль для всех названий блюд во всех карточках */
@@ -199,25 +201,7 @@ body{
   
   font-family: "SF Pro Display", sans-serif;
 }
-.footer small{letter-spacing:.12em}
 
-/* Боковой блок «Электронное меню» как на фото */
-.note{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:80px 1fr;
-  gap:12px;
-  align-items:center;
-}
-
-.note .qr{
-  width:80px;
-  height:80px;
-  background:#c9c9c1; 
-  border-radius:6px;
-  border:1px solid var(--rule);
-}
-
-.note .txt{
-  color:#7a7a70; font-weight:600
+.footer small{
+    letter-spacing:.12em
 }
